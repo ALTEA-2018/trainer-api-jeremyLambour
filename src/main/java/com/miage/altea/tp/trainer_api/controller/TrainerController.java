@@ -37,8 +37,8 @@ public class TrainerController {
         return trainerService.updateTrainer(trainer);
     }
 
-    @DeleteMapping("/")
-    boolean deleteTrainer(@RequestParam String name){
+    @DeleteMapping("/{name}")
+    boolean deleteTrainer(@PathVariable String name){
         return trainerService.deleteTrainer(name);
     }
 }
