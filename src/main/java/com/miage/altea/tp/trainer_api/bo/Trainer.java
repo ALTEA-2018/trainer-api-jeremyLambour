@@ -1,37 +1,61 @@
 package com.miage.altea.tp.trainer_api.bo;
 
-import javax.persistence.*;
 import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Trainer {
-    @Id
-    private String name;
+	@Id
+	private String name;
 
-    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-    @JoinColumn
-    private List<Pokemon> team;
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinColumn
+	private List<Pokemon> team;
 
-    public Trainer() {
-    }
+	@Column
+	private String password;
 
-    public Trainer(String name) {
-        this.name = name;
-    }
+	public Trainer() {
+	}
+	
+	
 
-    public String getName() {
-        return name;
-    }
+	public String getPassword() {
+		return password;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
-    public List<Pokemon> getTeam() {
-        return team;
-    }
 
-    public void setTeam(List<Pokemon> team) {
-        this.team = team;
-    }
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+
+
+	public Trainer(String name) {
+		this.name = name;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public List<Pokemon> getTeam() {
+		return team;
+	}
+
+	public void setTeam(List<Pokemon> team) {
+		this.team = team;
+	}
 }

@@ -1,19 +1,23 @@
 package com.miage.altea.tp.trainer_api.controller;
 
-import com.miage.altea.tp.trainer_api.bo.Pokemon;
-import com.miage.altea.tp.trainer_api.bo.Trainer;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import com.miage.altea.tp.trainer_api.bo.Pokemon;
+import com.miage.altea.tp.trainer_api.bo.Trainer;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -28,14 +32,29 @@ class TrainerControllerIntegrationTest {
     @Autowired
     private TrainerController controller;
 
+    @Value("${spring.security.user.name}") 
+    private String username;
+
+    @Value("${spring.security.user.password}")
+    private String password;
     @Test
     void trainerController_shouldBeInstanciated(){
         assertNotNull(controller);
     }
+    
+    @Test 
+    void getTrainers_shouldThrowAnUnauthorized(){
+        var responseEntity = this.restTemplate
+                .getForEntity("http://localhost:" + port + "/trainers/Ash", Trainer.class);
+        assertNotNull(responseEntity);
+        assertEquals(401, responseEntity.getStatusCodeValue());
+    }
 
     @Test
     void getTrainer_withNameAsh_shouldReturnAsh() {
-        var ash = this.restTemplate.getForObject("http://localhost:" + port + "/trainers/Ash", Trainer.class);
+        var ash = this.restTemplate
+        		 .withBasicAuth(username, password)
+        		.getForObject("http://localhost:" + port + "/trainers/Ash", Trainer.class);
         assertNotNull(ash);
         assertEquals("Ash", ash.getName());
         assertEquals(1, ash.getTeam().size());
